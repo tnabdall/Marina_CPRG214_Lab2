@@ -96,44 +96,52 @@ namespace Marina_CPRG214_Lab2
         /// <param name="e"></param>
         protected void submitButton_Click(object sender, EventArgs e)
         {
-            // Process register request
-            if (isRegistrationForm)
+            try
             {
-                // Attempts to register customer in DB. If successful, continue to lease slip page
-                if(CustomerDB.RegisterCustomer(new Customer(-1, firstNameTextBox.Text.Trim(), lastNameTextBox.Text.Trim(), phoneTextBox.Text.Trim(), cityTextBox.Text.Trim(), usernameTextBox.Text.Trim()), passwordTextBox.Text.Trim()))
+                // Process register request
+                if (isRegistrationForm)
                 {
-                    // Gets registerd customer id (by logging in)
+                    // Attempts to register customer in DB. If successful, continue to lease slip page
+                    if (CustomerDB.RegisterCustomer(new Customer(-1, firstNameTextBox.Text.Trim(), lastNameTextBox.Text.Trim(), phoneTextBox.Text.Trim(), cityTextBox.Text.Trim(), usernameTextBox.Text.Trim()), passwordTextBox.Text.Trim()))
+                    {
+                        // Gets registerd customer id (by logging in)
+                        Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text.Trim(), passwordTextBox.Text.Trim());
+                        if (loggedInCustomer != null) // If login is successful, proceed to lease slip page
+                        {
+                            // Attaches two session variables to hold customer username and id
+                            Session["loggedInCustomer"] = loggedInCustomer.Username;
+                            Session["loggedInCustomerId"] = loggedInCustomer.CustomerId;
+                            Response.Redirect("~/LeaseSlip.aspx");
+                        }
+                    }
+                    else
+                    {
+                        failedLabel.Text = "Unable to register customer. Username already exists.";
+                        failedLabel.Visible = true;
+                    }
+                }
+                else // Process login request
+                {
+                    // Attempts to login customer
                     Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text.Trim(), passwordTextBox.Text.Trim());
-                    if (loggedInCustomer != null) // If login is successful, proceed to lease slip page
+                    if (loggedInCustomer != null) // If login is successful
                     {
                         // Attaches two session variables to hold customer username and id
                         Session["loggedInCustomer"] = loggedInCustomer.Username;
                         Session["loggedInCustomerId"] = loggedInCustomer.CustomerId;
-                        Response.Redirect("~/LeaseSlip.aspx");
+                        Response.Redirect("~/LeaseSlip.aspx"); // Go to lease slip page
+                    }
+                    else
+                    {
+                        failedLabel.Text = "Failed to login. Please check username and password.";
+                        failedLabel.Visible = true;
                     }
                 }
-                else
-                {
-                    failedLabel.Text = "Unable to register customer. Username already exists.";
-                    failedLabel.Visible = true;
-                }
             }
-            else // Process login request
+            catch(Exception)
             {
-                // Attempts to login customer
-                Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text.Trim(), passwordTextBox.Text.Trim());
-                if (loggedInCustomer != null) // If login is successful
-                {
-                    // Attaches two session variables to hold customer username and id
-                    Session["loggedInCustomer"] = loggedInCustomer.Username;
-                    Session["loggedInCustomerId"] = loggedInCustomer.CustomerId;
-                    Response.Redirect("~/LeaseSlip.aspx"); // Go to lease slip page
-                }
-                else
-                {
-                    failedLabel.Text = "Failed to login. Please check username and password.";
-                    failedLabel.Visible = true;
-                }
+                failedLabel.Text = "Error in DB. Please try again later.";
+                failedLabel.Visible = true;
             }
         }
     }

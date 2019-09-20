@@ -62,35 +62,42 @@ namespace Marina_CPRG214_Lab2
                 default:
                     break; // No filter
             }
-            List<Dock> allDocks = DockDB.GetDocks();
-            // Cycle through all docks in drop down list
-            for (int i = 0; i < dockDropDownList.Items.Count; i++)
+            try
             {
-                bool enabled = true; // Assume enabled
-                // Get dock id
-                int dockId = Convert.ToInt32(dockDropDownList.Items[i].Value);
-                // Go through all docks until we find a match
-                for (int j = 0; j < allDocks.Count; j++)
+                List<Dock> allDocks = DockDB.GetDocks();
+                // Cycle through all docks in drop down list
+                for (int i = 0; i < dockDropDownList.Items.Count; i++)
                 {
-                    if (dockId == allDocks[j].DockId)
+                    bool enabled = true; // Assume enabled
+                                         // Get dock id
+                    int dockId = Convert.ToInt32(dockDropDownList.Items[i].Value);
+                    // Go through all docks until we find a match
+                    for (int j = 0; j < allDocks.Count; j++)
                     {
-                        // Check for electrical service. Disable if required but not available.
-                        if (needElectricalService && allDocks[j].ElectricalService == false)
+                        if (dockId == allDocks[j].DockId)
                         {
-                            enabled = false;
-                        }
-                        // Check for water service. Disable if required but not available.
-                        if (needWaterService && allDocks[j].WaterService == false)
-                        {
-                            enabled = false;
+                            // Check for electrical service. Disable if required but not available.
+                            if (needElectricalService && allDocks[j].ElectricalService == false)
+                            {
+                                enabled = false;
+                            }
+                            // Check for water service. Disable if required but not available.
+                            if (needWaterService && allDocks[j].WaterService == false)
+                            {
+                                enabled = false;
+                            }
                         }
                     }
+                    // Sets enabled property of dropdownlist item
+                    dockDropDownList.Items[i].Enabled = enabled;
                 }
-                // Sets enabled property of dropdownlist item
-                dockDropDownList.Items[i].Enabled = enabled;
+                // Selects first item in drop down list
+                dockDropDownList.SelectedIndex = 0;
             }
-            // Selects first item in drop down list
-            dockDropDownList.SelectedIndex = 0;
+            catch
+            {
+                errorLabel2.Visible = true;
+            }
         }
 
         /// <summary>
@@ -100,24 +107,31 @@ namespace Marina_CPRG214_Lab2
         /// <param name="e"></param>
         protected void slipsGridView_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            // For lease click (assigned to new button)
-            if (e.CommandName == "New")
+            try
             {
-                if (customerId < 0) // If customer id is invalid dont run method
+                // For lease click (assigned to new button)
+                if (e.CommandName == "New")
                 {
-                    return;
+                    if (customerId < 0) // If customer id is invalid dont run method
+                    {
+                        return;
+                    }
+                    // Get slip id from active row
+                    int index = Convert.ToInt32(e.CommandArgument);
+                    GridViewRow row = slipsGridView.Rows[index];
+                    int slipId = Convert.ToInt32(row.Cells[0].Text);
+
+                    // Lease slip in DB
+                    LeaseDB.LeaseSlip(customerId, slipId);
+
+                    // Refresh grid views
+                    leasedSlipsGridView.DataBind();
+                    slipsGridView.DataBind();
                 }
-                // Get slip id from active row
-                int index = Convert.ToInt32(e.CommandArgument);
-                GridViewRow row = slipsGridView.Rows[index];
-                int slipId = Convert.ToInt32(row.Cells[0].Text);
-
-                // Lease slip in DB
-                LeaseDB.LeaseSlip(customerId, slipId);
-
-                // Refresh grid views
-                leasedSlipsGridView.DataBind();
-                slipsGridView.DataBind();
+            }
+            catch (Exception)
+            {
+                errorLabel2.Visible = true;
             }
         }
 

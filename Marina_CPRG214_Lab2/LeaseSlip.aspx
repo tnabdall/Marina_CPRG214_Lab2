@@ -5,6 +5,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContentPlaceHolder" runat="server">
     <div class="text-center mt-2 mb-2">
         <asp:Image ID="yachtImage" CssClass="img-fluid rounded d-inline-block" runat="server" ImageUrl="~/Images/yacht-marina.jpg" />
+        <asp:Label ID="errorLabel2" CssClass="text-danger" runat="server" Text="DB error. Please try this page again later." Visible="false"></asp:Label>
     </div>
     <br />
     <%-- Holds all filter controls and logout --%>

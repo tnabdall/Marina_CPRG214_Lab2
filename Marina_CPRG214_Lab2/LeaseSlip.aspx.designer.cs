@@ -22,6 +22,15 @@ namespace Marina_CPRG214_Lab2 {
         protected global::System.Web.UI.WebControls.Image yachtImage;
         
         /// <summary>
+        /// errorLabel2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label errorLabel2;
+        
+        /// <summary>
         /// filterLabel control.
         /// </summary>
         /// <remarks>

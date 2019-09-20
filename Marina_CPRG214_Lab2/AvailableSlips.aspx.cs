@@ -40,35 +40,42 @@ namespace Marina_CPRG214_Lab2
                 default:
                     break; // No filter               
             }
-            List<Dock> allDocks = DockDB.GetDocks(); // Gets all docks
-            // Cycle through all docks in drop down list
-            for(int i = 0; i<dockDropDownList.Items.Count; i++)
+            try
             {
-                bool enabled = true; // Assume enabled to start
-                // Get dock id
-                int dockId = Convert.ToInt32(dockDropDownList.Items[i].Value);
-                // Go through all docks until we find a match
-                for (int j = 0; j<allDocks.Count; j++)
+                List<Dock> allDocks = DockDB.GetDocks(); // Gets all docks
+                                                         // Cycle through all docks in drop down list
+                for (int i = 0; i < dockDropDownList.Items.Count; i++)
                 {
-                    if (dockId == allDocks[j].DockId) // Match is found
+                    bool enabled = true; // Assume enabled to start
+                                         // Get dock id
+                    int dockId = Convert.ToInt32(dockDropDownList.Items[i].Value);
+                    // Go through all docks until we find a match
+                    for (int j = 0; j < allDocks.Count; j++)
                     {
-                        // Check for electrical service. Disable if required but not available.
-                        if (needElectricalService && allDocks[j].ElectricalService==false)
+                        if (dockId == allDocks[j].DockId) // Match is found
                         {
-                            enabled = false;                            
-                        }
-                        // Check for water service. Disable if required but not available.
-                        if (needWaterService && allDocks[j].WaterService == false)
-                        {
-                            enabled = false;                            
+                            // Check for electrical service. Disable if required but not available.
+                            if (needElectricalService && allDocks[j].ElectricalService == false)
+                            {
+                                enabled = false;
+                            }
+                            // Check for water service. Disable if required but not available.
+                            if (needWaterService && allDocks[j].WaterService == false)
+                            {
+                                enabled = false;
+                            }
                         }
                     }
+                    // Sets enabled property of dropdownlist item
+                    dockDropDownList.Items[i].Enabled = enabled;
                 }
-                // Sets enabled property of dropdownlist item
-                dockDropDownList.Items[i].Enabled = enabled;
+                // Selects first item in drop down list
+                dockDropDownList.SelectedIndex = 0;
             }
-            // Selects first item in drop down list
-            dockDropDownList.SelectedIndex = 0;
+            catch(Exception)
+            {
+                errorLabel.Visible = true;
+            }
         }
     }
 }
