@@ -5,3 +5,19 @@
 p{
     white-space: pre-line;
 }
+
+#mainContentPlaceHolder_fullMarinaImage {
+    width: 100%;
+}
+
+#homeParagraph{
+    vertical-align: middle;
+}
+
+#mainContentPlaceHolder_blueHavenImage {
+    width: 80%;
+}
+
+#mainContentPlaceHolder_yachtImage {
+    width: 80%;
+}

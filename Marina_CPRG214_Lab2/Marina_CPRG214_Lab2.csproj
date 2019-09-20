@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\blue-haven_marina.jpg" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -97,7 +98,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Default.css" />
     <Content Include="Content\styles.css" />
-    <Content Include="inlandmarina_banner.jpg" />
+    <Content Include="Images\fullMarina.jpg" />
+    <Content Include="Images\inlandmarina_banner.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -125,6 +127,7 @@
     <Content Include="ContactUs.aspx" />
     <Content Include="Registration.aspx" />
     <Content Include="LeaseSlip.aspx" />
+    <Content Include="Images\yacht-marina.jpg" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

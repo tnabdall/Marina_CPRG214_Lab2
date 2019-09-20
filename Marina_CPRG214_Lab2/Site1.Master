@@ -18,7 +18,7 @@
     <form id="masterForm" runat="server">
         <div class="container-fluid">
             <header class="mb-0">
-                <img class="img-fluid" src="inlandmarina_banner.jpg" />
+                <img class="img-fluid" src="Images/inlandmarina_banner.jpg" />
             </header>
 
             <nav class="navbar navbar-expand-md bg-dark navbar-dark mt-0">
@@ -53,7 +53,8 @@
                 <asp:ContentPlaceHolder ID="mainContentPlaceHolder" runat="server">
                 </asp:ContentPlaceHolder>
             </main>
-            <footer>
+            <footer class="mt-2">
+                <p>&copy Inland Marina</p>
             </footer>
         </div>
     </form>

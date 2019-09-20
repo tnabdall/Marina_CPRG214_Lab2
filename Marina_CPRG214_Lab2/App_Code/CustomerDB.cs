@@ -11,21 +11,23 @@ namespace Marina_CPRG214_Lab2.App_Code
     [DataObject(true)]
     public static class CustomerDB
     {
-        [DataObjectMethod(DataObjectMethodType.Insert)]
-        public static void AddCustomer(Customer customer)
-        {
-
-        }
-
+       /// <summary>
+       /// Verifies customer login info to gain authentication
+       /// </summary>
+       /// <param name="username">Username</param>
+       /// <param name="password">Unencrypted password</param>
+       /// <returns></returns>
         public static Customer VerifyLogin(String username, String password)
         {
-
+            // Creates connection
             SqlConnection connection = MarinaDB.GetConnection();
-
+            // Empty customer
             Customer customer;
+            // Holds password hash and salt from DB
             string savedPasswordHash;
             byte[] salt;
 
+            // Grab all parameters from DB
             string query = "SELECT ID, FirstName, LastName, Phone, City, Username, Password, Salt FROM Customer " +
                 "WHERE Username = @Username ; ";
 
@@ -33,7 +35,9 @@ namespace Marina_CPRG214_Lab2.App_Code
             connection.Open();
 
             cmd.Parameters.AddWithValue("@Username", username);
+            // Run query
             SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+            // If username is in DB, retrieve saved password hash and salt and create customer object
             if (reader.HasRows)
             {
                 reader.Read();
@@ -48,7 +52,7 @@ namespace Marina_CPRG214_Lab2.App_Code
                     reader["Username"].ToString()
                     );
             }
-            else
+            else // User doesnt exist, return null
             {
                 return null;
             }
@@ -63,40 +67,47 @@ namespace Marina_CPRG214_Lab2.App_Code
             /* Compare the results */
             for (int i = 0; i < 20; i++)
                 if (hashBytes[i + 16] != hash[i])
-                    return null;
+                    return null; // If comparison fails, return null
 
-            return customer;
+            return customer; // Returns customer
         }
 
         [DataObjectMethod(DataObjectMethodType.Insert)]
         public static bool RegisterCustomer(Customer customer, String password)
         {
+            // Generates salt for new customer
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
 
+            // Generates hashedpassword from unencrypted password and salt
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
             byte[] hash = pbkdf2.GetBytes(20);
 
+            // Combines salt with hashed password
             byte[] hashBytes = new byte[36];
             Array.Copy(salt, 0, hashBytes, 0, 16);
             Array.Copy(hash, 0, hashBytes, 16, 20);
 
+            // Convert to string for DB
             string savedPasswordHash = Convert.ToBase64String(hashBytes);
 
             // Check if customer first and last name exists in DB
             bool registerExistingCustomer = false;
             SqlConnection connection = MarinaDB.GetConnection();
 
+            // Test if there is a match for First and Last name in DB. If there is, see if there is no assigned username
             string testUserExistsQuery = "SELECT Username FROM Customer " +
                 "WHERE FirstName=@FirstName AND LastName=@LastName AND Username IS NULL ";
 
+            
             SqlCommand cmd = new SqlCommand(testUserExistsQuery, connection);
             connection.Open();
             cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
             cmd.Parameters.AddWithValue("@LastName", customer.LastName);
             cmd.Parameters.AddWithValue("@Username", customer.Username);
+            // Run query
             SqlDataReader reader = cmd.ExecuteReader();
-            if (reader.HasRows)
+            if (reader.HasRows) // There is a customer with no username but a first and last name match
             {                
                 reader.Read();
                 string user = reader["Username"] as string;
@@ -106,7 +117,7 @@ namespace Marina_CPRG214_Lab2.App_Code
                     return false;
                 }
                 // Run query to add user and login to register existing customer
-                registerExistingCustomer = true;
+                registerExistingCustomer = true; //
                 reader.Close();
             }
             connection.Close();
@@ -114,7 +125,7 @@ namespace Marina_CPRG214_Lab2.App_Code
             connection = MarinaDB.GetConnection();
             connection.Open();
 
-            if (registerExistingCustomer) // Update existing customer
+            if (registerExistingCustomer) // Update existing customer with no username
             {
                 string query = "Update Customer SET Phone = @Phone, City = @City, Username = @Username, Password = @Password, Salt = @Salt WHERE " +
                     "FirstName=@FirstName AND LastName=@LastName ; ";

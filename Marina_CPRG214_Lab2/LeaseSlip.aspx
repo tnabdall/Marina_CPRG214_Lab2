@@ -2,6 +2,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContentPlaceHolder" runat="server">
+    <asp:Image ID="yachtImage" runat="server" ImageUrl="~/Images/yacht-marina.jpg" />
     <br />
     <div class="container mb-2">
     <asp:Label ID="filterLabel" CssClass="text-primary text-lg-center col-xs-3" runat="server" Text="Services Needed: "></asp:Label>
