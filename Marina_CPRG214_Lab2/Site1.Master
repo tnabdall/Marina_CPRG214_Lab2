@@ -5,11 +5,12 @@
 <html>
 <head runat="server">
     <title></title>
+    <%-- Bootstrap required --%>
     <link href="Content/bootstrap.css" rel="stylesheet" />
     <script src="Scripts/jquery-3.0.0.min.js"></script>
     <script src="Scripts/popper.js"></script>
     <script src="Scripts/bootstrap.js"></script>
-
+    <%-- General styling sheet --%>
     <link href="Content/styles.css" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -17,10 +18,12 @@
 <body>
     <form id="masterForm" runat="server">
         <div class="container-fluid">
+            <%-- Header holds banner --%>
             <header class="mb-0">
                 <img class="img-fluid" src="Images/inlandmarina_banner.jpg" />
             </header>
 
+            <%-- Bootstrap nav menu --%>
             <nav class="navbar navbar-expand-md bg-dark navbar-dark mt-0">
                 <!-- Brand -->
                 <a class="navbar-brand" href="Default.aspx">Inland Marina</a>
@@ -48,12 +51,13 @@
                     </ul>
                 </div>
             </nav>
-
+            <%-- Holds body for child pages --%>
             <main>
                 <asp:ContentPlaceHolder ID="mainContentPlaceHolder" runat="server">
                 </asp:ContentPlaceHolder>
             </main>
-            <footer class="mt-2">
+            <%-- Company footer and copyright --%>
+            <footer class="mt-2 text-primary">
                 <p>&copy Inland Marina</p>
             </footer>
         </div>

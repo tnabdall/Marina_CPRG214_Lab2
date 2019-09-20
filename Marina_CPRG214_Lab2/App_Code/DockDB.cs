@@ -10,14 +10,19 @@ namespace Marina_CPRG214_Lab2.App_Code
     [DataObject(true)]
     public class DockDB
     {
+        /// <summary>
+        /// Gets all docks in Marina
+        /// </summary>
+        /// <returns>All docks in Marina</returns>
         [DataObjectMethod(DataObjectMethodType.Select)]
         public static List<Dock> GetDocks()
         {
-            List<Dock> docks = new List<Dock>();
+            List<Dock> docks = new List<Dock>(); // Empty list
 
             SqlConnection connection = MarinaDB.GetConnection();
 
-            string query = "SELECT * " +
+            // Query to get all dock info
+            string query = "SELECT * " + 
                 "FROM Dock ; " ;
 
             SqlCommand cmd = new SqlCommand(query, connection);
@@ -27,6 +32,7 @@ namespace Marina_CPRG214_Lab2.App_Code
 
             while (reader.Read())
             {
+                // Add every found dock to list
                 docks.Add(new Dock(
                     (int)reader["ID"],
                     reader["Name"].ToString(),

@@ -7,9 +7,11 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="mainContentPlaceHolder" runat="server">
     <h1 class="text-center text-primary mt-2">About us</h1>
     <div class="container-fluid align-content-center text-center d-inline-block">
+        <%-- Centers and formats marina image --%>
         <div class="col-xs-5 d-inline-block">
-        <asp:Image ID="fullMarinaImage" CssClass="img-fluid rounded d-inline-block" runat="server" ImageUrl="~/Images/fullMarina.jpg" />
-            </div>
+            <asp:Image ID="fullMarinaImage" CssClass="img-fluid rounded d-inline-block" runat="server" ImageUrl="~/Images/fullMarina.jpg" />
+        </div>
+        <%-- Shows information about Inland Marina --%>
         <div id="homeParagraph" class="container border border-primary rounded mt-2 d-inline-block col-xs-7">
 
             <p class="text-dark">

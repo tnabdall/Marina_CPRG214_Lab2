@@ -13,15 +13,21 @@ namespace Marina_CPRG214_Lab2
         bool isRegistrationForm = false; // If true, use registration layout
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Makes form login/register as it was before on post back
             if (IsPostBack && ViewState["isRegistrationForm"]!=null)
             {
                 isRegistrationForm = (bool) ViewState["isRegistrationForm"];
             }
         }
 
+        /// <summary>
+        /// Processes form layout change to registration form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void registerButton_Click(object sender, EventArgs e)
         {
-            
+            // All appropriate fields are visible
             firstNameLabel.Visible = true;
             firstNameTextBox.Visible = true;
             lastNameLabel.Visible = true;
@@ -30,24 +36,32 @@ namespace Marina_CPRG214_Lab2
             phoneTextBox.Visible = true;
             cityLabel.Visible = true;
             cityTextBox.Visible = true;
-            cancelButton.Visible = true;
+            
 
+            // All validators are enabled
             firstNameRequiredValidator.Enabled = true;
             lastNameRequiredValidator.Enabled = true;
             phoneRegularExpressionValidator.Enabled = true;
             phoneRequiredValidator.Enabled = true;
             cityRequiredValidator.Enabled = true;
 
+            // Hide register button, show cancel button
+            cancelButton.Visible = true;
             registerButton.Visible = false;
 
-            isRegistrationForm = true;
+            // Holds registration form status in view state
+            isRegistrationForm = true; 
             ViewState["isRegistrationForm"] = isRegistrationForm;
         }
 
+        /// <summary>
+        /// Cancels registration. Reverts to login form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void cancelButton_Click(object sender, EventArgs e)
-        {
-            
-
+        {            
+            // Hides all appropriate fields
             firstNameLabel.Visible = false;
             firstNameTextBox.Visible = false;
             lastNameLabel.Visible = false;
@@ -57,41 +71,56 @@ namespace Marina_CPRG214_Lab2
             cityLabel.Visible = false;
             cityTextBox.Visible = false;
 
+            // Disables all irrelevant validators
             firstNameRequiredValidator.Enabled = false;
             lastNameRequiredValidator.Enabled = false;
             phoneRegularExpressionValidator.Enabled = false;
             phoneRequiredValidator.Enabled = false;
             cityRequiredValidator.Enabled = false;
 
+            // Show register button, hide cancel button
             cancelButton.Visible = false;
             registerButton.Visible = true;
 
+            // Holds login form status in view state
             isRegistrationForm = false;
+            ViewState["isRegistrationForm"] = isRegistrationForm;
         }
 
+        /// <summary>
+        /// Process login/register request
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void submitButton_Click(object sender, EventArgs e)
         {
+            // Process register request
             if (isRegistrationForm)
             {
+                // Attempts to register customer in DB. If successful, continue to lease slip page
                 if(CustomerDB.RegisterCustomer(new Customer(-1, firstNameTextBox.Text, lastNameTextBox.Text, phoneTextBox.Text, cityTextBox.Text, usernameTextBox.Text), passwordTextBox.Text))
                 {
+                    // Gets registerd customer id (by logging in)
                     Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text, passwordTextBox.Text);
-                    if (loggedInCustomer != null)
+                    if (loggedInCustomer != null) // If login is successful, proceed to lease slip page
                     {
+                        // Attaches two session variables to hold customer username and id
                         Session["loggedInCustomer"] = loggedInCustomer.Username;
                         Session["loggedInCustomerId"] = loggedInCustomer.CustomerId;
                         Response.Redirect("~/LeaseSlip.aspx");
                     }
                 }
             }
-            else
+            else // Process login request
             {
+                // Attempts to login customer
                 Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text, passwordTextBox.Text);
-                if (loggedInCustomer != null)
+                if (loggedInCustomer != null) // If login is successful
                 {
+                    // Attaches two session variables to hold customer username and id
                     Session["loggedInCustomer"] = loggedInCustomer.Username;
                     Session["loggedInCustomerId"] = loggedInCustomer.CustomerId;
-                    Response.Redirect("~/LeaseSlip.aspx");
+                    Response.Redirect("~/LeaseSlip.aspx"); // Go to lease slip page
                 }
                 else
                 {

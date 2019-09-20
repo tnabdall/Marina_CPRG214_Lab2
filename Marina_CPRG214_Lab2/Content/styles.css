@@ -1,23 +1,24 @@
 ﻿header > img {
-    width: 100%;
+    width: 100%; /*Banner image takes full width*/
 }
 
 p{
-    white-space: pre-line;
+    white-space: pre-line; /*Fixes paragraph spacing*/
 }
 
 #mainContentPlaceHolder_fullMarinaImage {
-    width: 100%;
+    width: 100%; /*Sets image width for image on home page*/
 }
 
 #homeParagraph{
-    vertical-align: middle;
+    vertical-align: middle; /*Aligns paragraph to middle of div (side by side with image*/
 }
 
 #mainContentPlaceHolder_blueHavenImage {
-    width: 80%;
+    max-height: 40%; /*Max height for image on available slips page*/
 }
 
 #mainContentPlaceHolder_yachtImage {
-    width: 80%;
+    max-height: 30%; /*Max height for image on lease slips page*/
 }
+
