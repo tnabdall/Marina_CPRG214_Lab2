@@ -11,27 +11,32 @@ namespace Marina_CPRG214_Lab2
     public partial class WebForm5 : System.Web.UI.Page
     {
         private int customerId;
-        private string username;
         protected void Page_Load(object sender, EventArgs e)
         {
-            
-            if (Session["loggedInCustomerId"] == null || Session["loggedInCustomer"] == null)
+            // First attempt to login. Gets rid of second session variable so user cannot try to enter the url again    
+            if (!IsPostBack && Session["loggedInCustomerId"] != null && Session["loggedInCustomer"] != null)
+            {
+                customerId = Convert.ToInt32(Session["loggedInCustomerId"]);
+                Session.Remove("loggedInCustomer");
+            }
+            else if(!IsPostBack) // If either check fails above, redirect
             {
                 Session.Clear();
                 Response.Redirect("~/Registration.aspx");
             }
-            else
+            else if (IsPostBack && Session["loggedInCustomerId"]==null) // If you have post back but dont have customer id, redirect
+            {
+                Session.Clear();
+                Response.Redirect("~/Registration.aspx");
+            }
+            else // Reassign customer id
             {
                 customerId = Convert.ToInt32(Session["loggedInCustomerId"]);
-                username = Session["loggedInCustomer"].ToString();
-                Session.Clear();
-                if (!IsPostBack)
-                {
-                    leasedSlipsGridView.DataBind();
-                }
+                
             }
             
         }
+
 
         protected void filterDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -81,7 +86,7 @@ namespace Marina_CPRG214_Lab2
             // For lease click
             if (e.CommandName == "New")
             {
-                if (username == null)
+                if (customerId < 0)
                 {
                     return;
                 }
@@ -92,9 +97,8 @@ namespace Marina_CPRG214_Lab2
 
                 LeaseDB.LeaseSlip(customerId, slipId);
 
-                Session["loggedInCustomerId"] = customerId;
-                Session["loggedInCustomer"] = username;
-                 
+                leasedSlipsGridView.DataBind();
+                slipsGridView.DataBind();
             }
         }
 
