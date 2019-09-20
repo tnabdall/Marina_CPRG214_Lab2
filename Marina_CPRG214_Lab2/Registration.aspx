@@ -50,6 +50,9 @@
             <asp:RequiredFieldValidator ID="passwordRequiredValidator" CssClass="text-danger" runat="server" ErrorMessage="Password required. " Enabled="true" Display="Dynamic" ControlToValidate="passwordTextBox"></asp:RequiredFieldValidator>
              <%-- Phone regex validator --%>
             <asp:RegularExpressionValidator ID="phoneRegularExpressionValidator" CssClass="text-danger" runat="server" ErrorMessage="Phone must follow format: 111-111-1111" ValidationExpression="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" ControlToValidate="phoneTextBox"></asp:RegularExpressionValidator>
+            <br />
+            <%-- Warning label for when failed to login --%>
+            <asp:Label ID="failedLabel" CssClass="text-danger" runat="server" Text="Unable to register customer. Username already exists." Visible="False"></asp:Label>
         </div>
     </div>
 </asp:Content>

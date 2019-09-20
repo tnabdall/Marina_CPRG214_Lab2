@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
@@ -75,6 +76,13 @@ namespace Marina_CPRG214_Lab2.App_Code
         [DataObjectMethod(DataObjectMethodType.Insert)]
         public static bool RegisterCustomer(Customer customer, String password)
         {
+            // Allows conversion of first and last name to title case
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
+            // Makes first and last name title case so we can check with DB properly
+            customer.FirstName = textInfo.ToTitleCase(customer.FirstName);
+            customer.LastName = textInfo.ToTitleCase(customer.LastName);
+
             // Generates salt for new customer
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
@@ -89,37 +97,56 @@ namespace Marina_CPRG214_Lab2.App_Code
             Array.Copy(hash, 0, hashBytes, 16, 20);
 
             // Convert to string for DB
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
+            string savedPasswordHash = Convert.ToBase64String(hashBytes);                     
 
-            // Check if customer first and last name exists in DB
-            bool registerExistingCustomer = false;
+            // Gets connection
             SqlConnection connection = MarinaDB.GetConnection();
 
             // Test if there is a match for First and Last name in DB. If there is, see if there is no assigned username
-            string testUserExistsQuery = "SELECT Username FROM Customer " +
-                "WHERE FirstName=@FirstName AND LastName=@LastName AND Username IS NULL ";
+            string testUsernameExists = "SELECT Username FROM Customer " +
+                "WHERE Username=@Username ; ";
+
+
+            SqlCommand cmdUser = new SqlCommand(testUsernameExists, connection);
+            connection.Open();
+            cmdUser.Parameters.AddWithValue("@Username", customer.Username);
+
+            // Run query
+            SqlDataReader readerUser = cmdUser.ExecuteReader();
+            if (readerUser.HasRows) // There is a customer with same username so end function
+            {
+                readerUser.Close();
+                connection.Close();
+
+                return false;
+            }
+            readerUser.Close();
+            connection.Close();
+
+            // Check if customer first and last name exists in DB
+            bool registerExistingCustomer = false;
+
+            connection = MarinaDB.GetConnection();
+
+            // Test if there is a match for First and Last name in DB. If there is, see if there is no assigned username
+            string testFirstAndLastNameExists = "SELECT Username FROM Customer " +
+                "WHERE FirstName=@FirstName AND LastName=@LastName AND Username IS NULL ; ";
 
             
-            SqlCommand cmd = new SqlCommand(testUserExistsQuery, connection);
+            SqlCommand cmd = new SqlCommand(testFirstAndLastNameExists, connection);
             connection.Open();
             cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
             cmd.Parameters.AddWithValue("@LastName", customer.LastName);
-            cmd.Parameters.AddWithValue("@Username", customer.Username);
+
             // Run query
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows) // There is a customer with no username but a first and last name match
-            {                
-                reader.Read();
-                string user = reader["Username"] as string;
-                // Trying to register an existing user
-                if (user != null)
-                {
-                    return false;
-                }
-                // Run query to add user and login to register existing customer
-                registerExistingCustomer = true; //
-                reader.Close();
+            {              
+                // Username doesnt exist for customer with first and last name. So update matched record.
+                registerExistingCustomer = true;               
+                                
             }
+            reader.Close();
             connection.Close();
 
             connection = MarinaDB.GetConnection();

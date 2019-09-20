@@ -48,6 +48,7 @@ namespace Marina_CPRG214_Lab2
             // Hide register button, show cancel button
             cancelButton.Visible = true;
             registerButton.Visible = false;
+            failedLabel.Visible = false;
 
             // Holds registration form status in view state
             isRegistrationForm = true; 
@@ -81,6 +82,7 @@ namespace Marina_CPRG214_Lab2
             // Show register button, hide cancel button
             cancelButton.Visible = false;
             registerButton.Visible = true;
+            failedLabel.Visible = false;
 
             // Holds login form status in view state
             isRegistrationForm = false;
@@ -98,10 +100,10 @@ namespace Marina_CPRG214_Lab2
             if (isRegistrationForm)
             {
                 // Attempts to register customer in DB. If successful, continue to lease slip page
-                if(CustomerDB.RegisterCustomer(new Customer(-1, firstNameTextBox.Text, lastNameTextBox.Text, phoneTextBox.Text, cityTextBox.Text, usernameTextBox.Text), passwordTextBox.Text))
+                if(CustomerDB.RegisterCustomer(new Customer(-1, firstNameTextBox.Text.Trim(), lastNameTextBox.Text.Trim(), phoneTextBox.Text.Trim(), cityTextBox.Text.Trim(), usernameTextBox.Text.Trim()), passwordTextBox.Text.Trim()))
                 {
                     // Gets registerd customer id (by logging in)
-                    Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text, passwordTextBox.Text);
+                    Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text.Trim(), passwordTextBox.Text.Trim());
                     if (loggedInCustomer != null) // If login is successful, proceed to lease slip page
                     {
                         // Attaches two session variables to hold customer username and id
@@ -110,11 +112,16 @@ namespace Marina_CPRG214_Lab2
                         Response.Redirect("~/LeaseSlip.aspx");
                     }
                 }
+                else
+                {
+                    failedLabel.Text = "Unable to register customer. Username already exists.";
+                    failedLabel.Visible = true;
+                }
             }
             else // Process login request
             {
                 // Attempts to login customer
-                Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text, passwordTextBox.Text);
+                Customer loggedInCustomer = CustomerDB.VerifyLogin(usernameTextBox.Text.Trim(), passwordTextBox.Text.Trim());
                 if (loggedInCustomer != null) // If login is successful
                 {
                     // Attaches two session variables to hold customer username and id
@@ -124,7 +131,8 @@ namespace Marina_CPRG214_Lab2
                 }
                 else
                 {
-                    usernameTextBox.Text = "Not Logged in";
+                    failedLabel.Text = "Failed to login. Please check username and password.";
+                    failedLabel.Visible = true;
                 }
             }
         }

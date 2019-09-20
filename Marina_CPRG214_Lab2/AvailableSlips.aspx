@@ -33,7 +33,7 @@
     </asp:GridView>
     <asp:ObjectDataSource ID="AllDocksObjectDataSource" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetDocks" TypeName="Marina_CPRG214_Lab2.App_Code.DockDB"></asp:ObjectDataSource>
 
-    <asp:ObjectDataSource ID="SlipsByDockObjectDataSource" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetSlipsByDock" TypeName="Marina_CPRG214_Lab2.App_Code.SlipDB">
+    <asp:ObjectDataSource ID="SlipsByDockObjectDataSource" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetAvailableSlipsByDock" TypeName="Marina_CPRG214_Lab2.App_Code.SlipDB">
         <SelectParameters>
             <asp:ControlParameter ControlID="dockDropDownList" Name="DockId" PropertyName="SelectedValue" Type="Int32" />
         </SelectParameters>
